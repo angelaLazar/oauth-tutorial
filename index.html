@@ -180,11 +180,15 @@ client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl
 <span class="pl-s">&lt;/html&gt;</span>
 <span class="pl-s"><span class="pl-pds">"""</span></span> <span class="pl-k">%</span>(client_id)</pre></div>
 
-<p>This will bring the user to GitHub to authorize the app to access their GitHUb email.<br>
-<img src="http://i.imgur.com/W0NxPjO.png" alt="">  </p>
+<p>This will create a link that brings the user to GitHub to authorize the app to access their GitHUb email. </p>
+</li>
+</ol>
+
+<p><img src="http://i.imgur.com/W0NxPjO.png" alt="">  </p>
 
 <p>If the users click <strong>Authorize application</strong>, then Github will call our callback URL (that we stated when we registered the app). But we need setup a handler for <code>/callback</code>.</p>
-</li>
+
+<ol>
 <li>
 <p>Add a <code>/callback handler</code> after the default handler at the bottom of the page that will call a class named <code>Callback</code></p>
 
