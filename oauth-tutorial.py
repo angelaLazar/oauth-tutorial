@@ -1,5 +1,5 @@
 import webapp2
-import re, os, time, base64, hashlib, urllib, json
+import re, os, time, base64, hashlib, urllib, urlparse, json
 
 from urllib2 import build_opener, HTTPSHandler, Request, HTTPError
 from urllib import quote as urlquote
@@ -62,24 +62,20 @@ class Callback(webapp2.RequestHandler):
 
 		try:
 		    response = opener.open(request, timeout=TIMEOUT)
-		    access_token_response = response.read()
+		    access_token_response = urlparse.parse_qs(response.read())
+
 		    if 'error' in access_token_response:
-		        raise ApiAuthError(str(access_token_response.error))
+		        raise GitHubApiAuthError(access_token_response['error_description'][0])
+
 		    # Now you have your access_token in access_token_response!    
-		    self.response.write("<p>Success! access_token received</p>")
+		    access_token = access_token_response['access_token'][0]
+		    self.response.write("<p>Success! access_token=%s</p>"%access_token)
 		except HTTPError as e:
 		    raise GitHubApiAuthError('HTTPError when getting access token from GitHub')
 
-
-class ApiError(Exception):
-    def __init__(self, url, request, response):
-        super(ApiError, self).__init__(url)
-        self.request = request
-        self.response = response
-
-class GitHubApiAuthError(ApiError):
+class GitHubApiAuthError(Exception):
     def __init__(self, msg):
-        super(ApiAuthError, self).__init__(msg, None, None)
+        super(Exception, self).__init__(msg)
      
 app = webapp2.WSGIApplication([
     ('/', MainPage),
