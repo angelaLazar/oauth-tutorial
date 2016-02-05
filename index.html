@@ -245,13 +245,16 @@ args <span class="pl-k">=</span> []
 <li>
 <p>Now we can make a request for the access token. Add this code to make a request right after where we build the request:</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">try</span>:
+<div class="highlight highlight-source-python"><pre>    <span class="pl-k">try</span>:
         response <span class="pl-k">=</span> opener.open(request, <span class="pl-v">timeout</span><span class="pl-k">=</span><span class="pl-c1">TIMEOUT</span>)
-        access_token_response <span class="pl-k">=</span> response.read()
+        access_token_response <span class="pl-k">=</span> urlparse.parse_qs(response.read())
+
         <span class="pl-k">if</span> <span class="pl-s"><span class="pl-pds">'</span>error<span class="pl-pds">'</span></span> <span class="pl-k">in</span> access_token_response:
-            <span class="pl-k">raise</span> ApiAuthError(<span class="pl-c1">str</span>(access_token_response.error))
+            <span class="pl-k">raise</span> GitHubApiAuthError(access_token_response[<span class="pl-s"><span class="pl-pds">'</span>error_description<span class="pl-pds">'</span></span>][<span class="pl-c1">0</span>])
+
         <span class="pl-c"># Now you have your access_token in access_token_response!    </span>
-        <span class="pl-v">self</span>.response.write(<span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Success! access_token received&lt;/p&gt;<span class="pl-pds">"</span></span>)
+        access_token <span class="pl-k">=</span> access_token_response[<span class="pl-s"><span class="pl-pds">'</span>access_token<span class="pl-pds">'</span></span>][<span class="pl-c1">0</span>]
+        <span class="pl-v">self</span>.response.write(<span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Success! access_token=<span class="pl-c1">%s</span>&lt;/p&gt;<span class="pl-pds">"</span></span><span class="pl-k">%</span>access_token)
     <span class="pl-k">except</span> HTTPError <span class="pl-k">as</span> e:
         <span class="pl-k">raise</span> GitHubApiAuthError(<span class="pl-s"><span class="pl-pds">'</span>HTTPError when getting access token from GitHub<span class="pl-pds">'</span></span>)</pre></div>
 
@@ -260,19 +263,15 @@ args <span class="pl-k">=</span> []
 
 <p>Everything should run successfully, but we need to do some error handling to make sure. If our request failed, then we  will get an <code>HTTPError</code>. Else this code will get the response from the request and the next line will see if there is an error in the response, if there is it will show the error. Else, we succeeded in getting our access token and a success message will print out. A successful response should look similar to this:<br>
 <code>access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&amp;scope=user%2Cgist&amp;token_type=bearer</code>  </p>
+
+<p>Note in this example, we are printing out the <strong>access_token</strong>, make sure in practice to hide this value from the user.</p>
 </li>
 <li>
-<p>Before you run this to get your <strong>access_token</strong>, we need to put in the classes for the errors mentioned above. Copy these classes after your <code>CallBack</code> class:</p>
+<p>Before you run this to get your <strong>access_token</strong>, we need to put in the class for <code>GitHubApiAuthError</code> mentioned above. Enter this class after your <code>CallBack</code> class:</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">class</span> <span class="pl-en">ApiError</span>(<span class="pl-c1">Exception</span>):
-<span class="pl-k">def</span> <span class="pl-c1">__init__</span>(<span class="pl-smi">self</span>, <span class="pl-smi">url</span>, <span class="pl-smi">request</span>, <span class="pl-smi">response</span>):
-    <span class="pl-c1">super</span>(ApiError, <span class="pl-v">self</span>).<span class="pl-c1">__init__</span>(url)
-    <span class="pl-v">self</span>.request <span class="pl-k">=</span> request
-    <span class="pl-v">self</span>.response <span class="pl-k">=</span> response
-
-<span class="pl-k">class</span> <span class="pl-en">GitHubApiAuthError</span>(<span class="pl-e">ApiError</span>):
+<div class="highlight highlight-source-python"><pre><span class="pl-k">class</span> <span class="pl-en">GitHubApiAuthError</span>(<span class="pl-c1">Exception</span>):
 <span class="pl-k">def</span> <span class="pl-c1">__init__</span>(<span class="pl-smi">self</span>, <span class="pl-smi">msg</span>):
-    <span class="pl-c1">super</span>(ApiAuthError, <span class="pl-v">self</span>).<span class="pl-c1">__init__</span>(msg, <span class="pl-c1">None</span>, <span class="pl-c1">None</span>)</pre></div>
+    <span class="pl-c1">super</span>(<span class="pl-c1">Exception</span>, <span class="pl-v">self</span>).<span class="pl-c1">__init__</span>(msg)</pre></div>
 </li>
 <li>
 <p>Now you should be able to run the code by refreshing your <a href="http://localhost:8080">http://localhost:8080</a> page.  </p>
