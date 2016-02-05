@@ -31,9 +31,9 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>The GitHub API allows applications to interface with it to access GitHub user data, create/delete users, view repos and more. To access user data from the GitHub API, your app must first have authorization. This tutorial will walk you through the steps of creating a simple Google App Engine(GAE) app which will gain authorization to interface user data from GitHub. The goal here is to get an <strong>access_token</strong> from GitHub which can then be used to make authorized requests.</p>
+        <p>The GitHub API allows applications to interface with GitHub to access user data, create/delete users, view repos and more. To access data via the GitHub API, your app must be given authorization. This tutorial will walk you through the steps of creating a simple Google App Engine(GAE) app which will gain authorization to interface with the GitHub API. The goal here is to get an <strong>access_token</strong> from GitHub which can then be used to make authorized requests.</p>
 
-<p>Though this tutorial uses GAE for a quick Python application setup, other Python web application frameworks should be similar.  For this tutorial you must also have a GitHub account where your new application can be registered.</p>
+<p>Though this tutorial, uses GAE for a quick Python application setup, other Python web application frameworks should be similar.  For this tutorial you must also have a GitHub account where your new application can be registered.</p>
 
 <h2>
 <a id="creating-a-python-application-using-google-app-engine" class="anchor" href="#creating-a-python-application-using-google-app-engine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating a Python Application using Google App Engine</h2>
@@ -54,10 +54,9 @@
 
 app <span class="pl-k">=</span> webapp2.WSGIApplication([
     (<span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span>, MainPage),
-    (<span class="pl-s"><span class="pl-pds">'</span>/callback<span class="pl-pds">'</span></span>, Callback),
 ], <span class="pl-v">debug</span><span class="pl-k">=</span><span class="pl-c1">True</span>)</pre></div>
 
-<p>This script will response to a request with an HTTP header message “Success!”</p>
+<p>This script will respond with a “Success!” message.</p>
 </li>
 <li>
 <p>Next before we can run the application we need to create a configuration file called <strong>app.yaml</strong>. Make sure to create this inside the oauth-tutorial directory.</p>
@@ -76,10 +75,10 @@ handlers:
 script: oauth-tutorial.app
 </code></pre>
 
-<p>The syntax of this file is YAML. This file states the application version number, the python runtime environment with it’s API version and that the application is threadsafe so it can handle multiple requests at once. </p>
+<p>The syntax of this file is YAML. This file states the application version number, the python runtime environment with its API version and that the application is thread-safe so it can safely handle multiple requests at once. </p>
 </li>
 <li>
-<p>Now that there is a handler script and configuration file, the application can now be run on the web server provided by the App Engine Python SDK.  </p>
+<p>Now that there is a request handler and configuration file, the application can now be run on the web server provided by the App Engine Python SDK.  </p>
 
 <p>From your directory that contains your oauth-tutorial/ directory, run this command which gets your web server running:
 <code>dev_appserver.py oauth-tutorial/</code>  </p>
@@ -94,17 +93,18 @@ script: oauth-tutorial.app
 <h2>
 <a id="register-the-application-with-github" class="anchor" href="#register-the-application-with-github" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Register the application with GitHub</h2>
 
-<p>To have an application interface with the GitHub API, the application first needs to be registered with GitHub for them to identify where the requests for authorization are coming from. GitHub identifies applications with a <strong>client_id</strong> and <strong>client_secret</strong> it assigns uniquely to each application.  </p>
+<p>To have an application interface with the GitHub API, it first needs to be registered with GitHub to identify where the requests for authorization are coming from. GitHub identifies applications with a <strong>client_id</strong> and <strong>client_secret</strong> it uniquely assigns to each application.  </p>
 
 <p>To register your application:</p>
 
 <ol>
-<li>
-<p>Open the form to register a new application <a href="https://github.com/settings/applications/new">here</a>.  </p>
-
-<p>This brings you to the form to register your app.<br>
-<img src="http://i.imgur.com/aUkxWwt.png" alt=""></p>
+<li>Open the form to register a new application <a href="https://github.com/settings/applications/new">here</a>.<br>
 </li>
+</ol>
+
+<p><img src="http://i.imgur.com/aUkxWwt.png" alt=""></p>
+
+<ol>
 <li><p>For your <strong>Application name</strong>, enter what you would like your application to called, this does not need to be unique, this is the name the user will see when granting you the authorization. I named mine “GitHub OAuth Tutorial”</p></li>
 <li>
 <p>For your <strong>Homepage URL</strong>, right now we are still running our web server locally so enter: <code>http://localhost:8080
@@ -112,8 +112,8 @@ script: oauth-tutorial.app
 
 <p>This can be changed later if you choose to host your application.</p>
 </li>
-<li><p>The <strong>Application description</strong> is an optional field you can use to provide further details about your application. Let’s skip that field for now.</p></li>
-<li><p>The <strong>Authorization callback URL</strong> is the last field, this is the URL that the GitHub API will send it’s requests to back our application. We will need to create a handler in our <strong>oauth-tutorial.py</strong> file to handle these responses. Let’s call this /callback, so for this field enter: <code>http://localhost:8080/callback</code></p></li>
+<li><p>The <strong>Application description</strong> is an optional field you can use to provide further details about your application. Since this field is optional, let's leave it blank.</p></li>
+<li><p>The <strong>Authorization callback URL</strong> is the last field, this is a URL that GitHub will make requests back to our application during the authorization process. We will need to create a handler in our <strong>oauth-tutorial.py</strong> file to handle these responses, which we will do later on. Let’s call this /callback, so for this field enter: <code>http://localhost:8080/callback</code></p></li>
 <li><p>Click the <strong>Register Application</strong> button and now your app is registered to talk to GitHub! You should see a Client ID and Client Secret.</p></li>
 </ol>
 
