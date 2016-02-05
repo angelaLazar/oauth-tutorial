@@ -206,7 +206,7 @@ client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl
     scope <span class="pl-k">=</span> <span class="pl-v">self</span>.request.get(<span class="pl-s"><span class="pl-pds">'</span>scope<span class="pl-pds">'</span></span>)</pre></div>
 </li>
 <li>
-<p>Now with this code, we have all the fields we need to construct a request for an <strong>access_token</strong> from GitHub! The <strong>access_token</strong> with then allow you to make requests to the API on behalf of the user. Now we need to put all of our fields together and contruct our request to get the <strong>access_token</strong>. Let’s create a dictionary of the fields, put this after the previous line:</p>
+<p>Now with this code, we have all the fields we need to construct a request for an <strong>access_token</strong> from GitHub! The <strong>access_token</strong> will then allow you to make requests to the API on behalf of the user. Now we need to put all of our fields together and contruct our request to get the <strong>access_token</strong>. Let’s create a dictionary of the fields, put this after the previous line:</p>
 
 <div class="highlight highlight-source-python"><pre>auth_params <span class="pl-k">=</span> <span class="pl-c1">dict</span>(<span class="pl-v">client_id</span><span class="pl-k">=</span>client_id, <span class="pl-v">client_secret</span><span class="pl-k">=</span>client_secret, <span class="pl-v">code</span><span class="pl-k">=</span>code, <span class="pl-v">scope</span><span class="pl-k">=</span>scope)</pre></div>
 </li>
