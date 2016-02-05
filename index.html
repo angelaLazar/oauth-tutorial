@@ -120,15 +120,15 @@ script: oauth-tutorial.app
 <h2>
 <a id="getting-the-github-authorization" class="anchor" href="#getting-the-github-authorization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting the GitHub Authorization</h2>
 
-<p>Now that the application is registered, we need to put our new <strong>client_id</strong> and <strong>client_secret</strong> into our application to use in requests to GitHub. But we do not want these values in code that could be pushed up to GitHub, else other applications can use them to access our users data. So one way to hide these values is to put them in a json file that will not be committed to GitHub.</p>
+<p>Now that the application is registered, we need to put our new <strong>client_id</strong> and <strong>client_secret</strong> into our application to use in requests to GitHub. But we do not want these values in code that could be pushed up to GitHub, else other applications can use them to access our user's data. So one way to hide these values is to put them in a json file that will not be committed to GitHub.</p>
 
 <ol>
 <li>
 <p>Create a new json file in your oauth-tutorial directory, called <strong>client_secrets.json</strong>. Inside of it, put in your <strong>client_id</strong> and <strong>client_secret</strong> you got from registering your application.</p>
 
 <pre><code>{
-"client_id":"&lt;your client_id&gt;",
-"client_secret":"&lt;your client_secret"
+    "client_id":"&lt;your client_id&gt;",
+    "client_secret":"&lt;your client_secret"
 }
 </code></pre>
 </li>
@@ -140,17 +140,17 @@ script: oauth-tutorial.app
 <div class="highlight highlight-source-python"><pre><span class="pl-k">with</span> <span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">'</span>client_secrets.json<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> data_file:    
 data <span class="pl-k">=</span> json.load(data_file)
 
-client_id<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl-pds">"</span>client_id<span class="pl-pds">"</span></span>]
-client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl-pds">"</span>client_secret<span class="pl-pds">"</span></span>]</pre></div>
+client_id <span class="pl-k">=</span> data[<span class="pl-s"><span class="pl-pds">"</span>client_id<span class="pl-pds">"</span></span>]
+client_secret <span class="pl-k">=</span> data[<span class="pl-s"><span class="pl-pds">"</span>client_secret<span class="pl-pds">"</span></span>]</pre></div>
 </li>
 <li>
 <p>The next step to getting authorization to a user’s data is to have the user give permission for our app to read their data.  </p>
 
-<p>We can choose to ask the user for a specific type of access such as for their profile info or gists. This is specified using scopes. See all the scopes the API supports <a href="https://developer.github.com/v3/oauth/#scopes">here</a>.  </p>
+<p>We can choose to ask the user for a specific type of access, such as for their profile info or gists. This is specified using scopes. See all the scopes the API supports <a href="https://developer.github.com/v3/oauth/#scopes">here</a>.  </p>
 
 <p>For our example, let’s just get the user’s email addresses. So we will set our <strong>scope</strong> to <code>user:email</code>.  </p>
 
-<p>Let’s put a link on our main webpage to GitHub, where to user can choose to authorize our app to read their email addresses.  </p>
+<p>Let’s put a link on our main webpage to GitHub, where a user can choose to authorize our app to read their email addresses.  </p>
 
 <p>Change your get method in the MainPage class to:</p>
 
@@ -184,10 +184,10 @@ client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl
 
 <p><img src="http://i.imgur.com/W0NxPjO.png" alt="">  </p>
 
-<p>If the users click <strong>Authorize application</strong>, then Github will call our callback URL (that we stated when we registered the app). But we need setup a handler for <code>/callback</code>.</p>
+<p>If the user clicks <strong>Authorize application</strong>, then Github will call our callback URL (that we stated when we registered the app). But we need setup a handler for <code>/callback</code>.</p>
 </li>
 <li>
-<p>Add a <code>/callback handler</code> after the default handler at the bottom of the page that will call a class named <code>Callback</code></p>
+<p>Add a request handler for <code>/callback</code> after the default handler at the bottom of the page that will call a class named <code>Callback</code></p>
 
 <div class="highlight highlight-source-python"><pre>app <span class="pl-k">=</span> webapp2.WSGIApplication([
 (<span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span>, MainPage),
@@ -195,7 +195,7 @@ client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl
 ], <span class="pl-v">debug</span><span class="pl-k">=</span><span class="pl-c1">True</span>)</pre></div>
 </li>
 <li>
-<p>Now create the <code>Callback</code> class, after the <code>MainPage</code> class.  In it we will need <code>def get(self):</code> method to handle the the GET request we will get from GitHub which includes a <strong>code</strong> field and the <strong>scope</strong> for the type of access.  </p>
+<p>Now create the <code>Callback</code> class, after the <code>MainPage</code> class.  In it, we will need <code>def get(self):</code> method to handle the the GET request we will receive from GitHub which includes a <strong>code</strong> field and the <strong>scope</strong> for the type of access.  </p>
 
 <p>Let’s create the get method and get the <strong>scope</strong> and <strong>code</strong> field from the request:</p>
 
@@ -206,7 +206,7 @@ client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl
     scope <span class="pl-k">=</span> <span class="pl-v">self</span>.request.get(<span class="pl-s"><span class="pl-pds">'</span>scope<span class="pl-pds">'</span></span>)</pre></div>
 </li>
 <li>
-<p>Now with this code, we have all the fields we need to construct a request for an <strong>access_token</strong> from GitHub! The <strong>access_token</strong> will then allow you to make requests to the API on behalf of the user. Now we need to put all of our fields together and contruct our request to get the <strong>access_token</strong>. Let’s create a dictionary of the fields, put this after the previous line:</p>
+<p>Now with this code, we have all the fields we need to construct a request for an <strong>access_token</strong> from GitHub! The <strong>access_token</strong> will then allow you to make requests to the API on behalf of the user. Now we need to put all of our fields together and construct our request to get the <strong>access_token</strong>. Let’s create a dictionary of the fields, put this after the previous line:</p>
 
 <div class="highlight highlight-source-python"><pre>auth_params <span class="pl-k">=</span> <span class="pl-c1">dict</span>(<span class="pl-v">client_id</span><span class="pl-k">=</span>client_id, <span class="pl-v">client_secret</span><span class="pl-k">=</span>client_secret, <span class="pl-v">code</span><span class="pl-k">=</span>code, <span class="pl-v">scope</span><span class="pl-k">=</span>scope)</pre></div>
 </li>
@@ -254,6 +254,9 @@ args <span class="pl-k">=</span> []
         <span class="pl-v">self</span>.response.write(<span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Success! access_token received&lt;/p&gt;<span class="pl-pds">"</span></span>)
     <span class="pl-k">except</span> HTTPError <span class="pl-k">as</span> e:
         <span class="pl-k">raise</span> GitHubApiAuthError(<span class="pl-s"><span class="pl-pds">'</span>HTTPError when getting access token from GitHub<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>Also remember to add a TIMEOUT variable in the file:<br>
+<code>TIMEOUT=60</code></p>
 
 <p>Everything hopefully should have worked well, but we need to do some error handling to make sure. If our try did not work, then we constructed the request incorrectly and we will get an <code>HTTPError</code>. Else this code will get the response from the request. In the next line we will read the response, which should look like:  </p>
 
