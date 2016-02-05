@@ -216,7 +216,7 @@ client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl
 <div class="highlight highlight-source-python"><pre>opener <span class="pl-k">=</span> build_opener(HTTPSHandler)
 request <span class="pl-k">=</span> Request(<span class="pl-s"><span class="pl-pds">'</span>https://github.com/login/oauth/access_token<span class="pl-pds">'</span></span>,<span class="pl-v">data</span><span class="pl-k">=</span>_encode_params(auth_params))</pre></div>
 
-<p>This is where we build our request, before we make. Note the <code>_encode_params</code> method here, we need to take our dictionary and encode it for the request. Copy this method above your two existing classes:</p>
+<p>This is where we build our request. Note the <code>_encode_params</code> method here, we need to take our dictionary and encode it for the request. Copy this method above your two existing classes:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">def</span> <span class="pl-en">_encode_params</span>(<span class="pl-smi">kw</span>):
 <span class="pl-s"><span class="pl-pds">'''</span></span>
@@ -243,7 +243,7 @@ args <span class="pl-k">=</span> []
 <p>Some of these we aren’t using yet but we will in the next steps.</p>
 </li>
 <li>
-<p>Now we can make a request for the access token. Add this code to make a request:</p>
+<p>Now we can make a request for the access token. Add this code to make a request right after where we build the request:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">try</span>:
         response <span class="pl-k">=</span> opener.open(request, <span class="pl-v">timeout</span><span class="pl-k">=</span><span class="pl-c1">TIMEOUT</span>)
