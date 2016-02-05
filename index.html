@@ -195,9 +195,9 @@ client_secret<span class="pl-k">=</span> data[<span class="pl-s"><span class="pl
 ], <span class="pl-v">debug</span><span class="pl-k">=</span><span class="pl-c1">True</span>)</pre></div>
 </li>
 <li>
-<p>Now create the <code>Callback</code> class, after the <code>MainPage</code> class.  In it we will need <code>def get(self):</code> method to handle the the GET request we will get from GitHub which includes a <code>code</code> field and the <code>scope</code> for the type of access.  </p>
+<p>Now create the <code>Callback</code> class, after the <code>MainPage</code> class.  In it we will need <code>def get(self):</code> method to handle the the GET request we will get from GitHub which includes a <strong>code</strong> field and the <strong>scope</strong> for the type of access.  </p>
 
-<p>Let’s create the get method and get the <code>scope</code> and <code>code</code> field from the request:</p>
+<p>Let’s create the get method and get the <strong>scope</strong> and <strong>code</strong> field from the request:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">class</span> <span class="pl-en">Callback</span>(<span class="pl-e">webapp2</span>.<span class="pl-e">RequestHandler</span>):
 <span class="pl-k">def</span> <span class="pl-en">get</span>(<span class="pl-smi">self</span>):
