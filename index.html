@@ -258,11 +258,8 @@ args <span class="pl-k">=</span> []
 <p>Also remember to add a TIMEOUT variable in the file:<br>
 <code>TIMEOUT=60</code></p>
 
-<p>Everything hopefully should have worked well, but we need to do some error handling to make sure. If our try did not work, then we constructed the request incorrectly and we will get an <code>HTTPError</code>. Else this code will get the response from the request. In the next line we will read the response, which should look like:  </p>
-
-<p><code>access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&amp;scope=user%2Cgist&amp;token_type=bearer</code>  </p>
-
-<p>The next line will see if there is an error in the response, if there is it will show the error. Else, we succeeded in getting our access token and a success message will print out.</p>
+<p>Everything should run successfully, but we need to do some error handling to make sure. If our request failed, then we  will get an <code>HTTPError</code>. Else this code will get the response from the request and the next line will see if there is an error in the response, if there is it will show the error. Else, we succeeded in getting our access token and a success message will print out. A successful response should look similar to this:<br>
+<code>access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&amp;scope=user%2Cgist&amp;token_type=bearer</code>  </p>
 </li>
 <li>
 <p>Before you run this to get your <strong>access_token</strong>, we need to put in the classes for the errors mentioned above. Copy these classes after your <code>CallBack</code> class:</p>
@@ -280,9 +277,9 @@ args <span class="pl-k">=</span> []
 <li>
 <p>Now you should be able to run the code by refreshing your <a href="http://localhost:8080">http://localhost:8080</a> page.  </p>
 
-<p>With this <strong>access_token</strong>, you can now make authorized requests to GitHub! There are multiple <a href="https://developer.github.com/libraries/">libraries</a> in several languages available to make the requests with.  </p>
+<p>With this <strong>access_token</strong>, you can now make authorized requests to GitHub! There are multiple <a href="https://developer.github.com/libraries/">libraries</a> in several languages available to make the requests.  </p>
 
-<p>I hope this helped you to understand more about using OAuth with GitHub. If you have any issues, you can compare to my code <a href="https://github.com/angelaLazar/oauth-tutorial">here</a>.</p>
+<p>I hope this helped you to better understand OAuth with GitHub. If you have any issues, you can compare to my code <a href="https://github.com/angelaLazar/oauth-tutorial">here</a>.</p>
 </li>
 </ol>
 
