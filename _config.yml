@@ -1,0 +1,8 @@
+title: How to Use GitHub OAuth Authorization in a Google App Engine Python Application
+description: 
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
