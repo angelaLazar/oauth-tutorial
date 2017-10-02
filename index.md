@@ -2,7 +2,7 @@ The GitHub API allows applications to interface with GitHub to access user data,
  
 Though this tutorial, uses GAE for a quick Python application setup, other Python web application frameworks should be similar.  For this tutorial you must also have a GitHub account where your new application can be registered.
 
-## Creating a Python Application using Google App Engine
+## Create a Python Application using Google App Engine
 
 1. Before you can get started, you will need to [download the Python SDK for App Engine.](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
 
