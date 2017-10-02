@@ -31,19 +31,19 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>The GitHub API allows applications to interface with GitHub to access user data, create/delete users, view repos and more. To access data via the GitHub API, your app must be given authorization. This tutorial will walk you through the steps of creating a simple Google App Engine(GAE) app which will gain authorization to interface with the GitHub API. The goal here is to get an <strong>access_token</strong> from GitHub which can then be used to make authorized requests.</p>
+        <p>The GitHub API allows applications to interface with GitHub to access user data, create/delete users, view repositories and more. To access data via the GitHub API, your app must be given authorization. This tutorial will go through the steps of creating a simple Google App Engine (GAE) application which will gain authorization to interface with the GitHub API. The goal here is to get an <strong>access_token</strong> from GitHub which can then be used to make authorized requests.</p>
 
-<p>Though this tutorial, uses GAE for a quick Python application setup, other Python web application frameworks should be similar.  For this tutorial you must also have a GitHub account where your new application can be registered.</p>
+<p>This tutorial uses GAE for a quick Python application setup but other Python web application frameworks should be similar.  For this tutorial you must have a GitHub account where your new application can be registered.</p>
 
 <h2>
-<a id="creating-a-python-application-using-google-app-engine" class="anchor" href="#creating-a-python-application-using-google-app-engine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating a Python Application using Google App Engine</h2>
+<a id="create-a-python-application-using-google-app-engine" class="anchor" href="#create-a-python-application-using-google-app-engine" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create a Python Application using Google App Engine</h2>
 
 <ol>
-<li><p>Before you can get started, you will need to <a href="https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python">download the Python SDK for App Engine.</a></p></li>
-<li><p>In your terminal, create a new directory to hold the project called oauth-tutorial.<br>
+<li><p>First you will need to <a href="https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python">download the Python SDK for App Engine.</a></p></li>
+  <li><p>In terminal create a new directory to hold the project called <strong>oauth-tutorial</strong>: <br>
 <code>mkdir oauth-tutorial</code></p></li>
 <li>
-<p>Inside your new directory, create a new Python file to contain your handlers. Let’s first start with a simple handler to see that the application was setup correctly. Call the file <strong>oauth-tutorial.py</strong> </p>
+<p>Inside this new directory create a new Python file to contain your handlers, call the file <strong>oauth-tutorial.py</strong>. Add a simple handler to see that the application was setup correctly: </p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> webapp2
 
@@ -59,7 +59,7 @@ app <span class="pl-k">=</span> webapp2.WSGIApplication([
 <p>This script will respond with a “Success!” message.</p>
 </li>
 <li>
-<p>Next before we can run the application we need to create a configuration file called <strong>app.yaml</strong>. Make sure to create this inside the oauth-tutorial directory.</p>
+<p>Next we need to create a configuration file called <strong>app.yaml</strong> before running the application . Create this inside the <strong>oauth-tutorial</strong> directory.</p>
 
 <pre><code>version: 1
 runtime: python27
@@ -93,7 +93,7 @@ script: oauth-tutorial.app
 <h2>
 <a id="register-the-application-with-github" class="anchor" href="#register-the-application-with-github" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Register the application with GitHub</h2>
 
-<p>To have an application interface with the GitHub API, it first needs to be registered with GitHub to identify where the requests for authorization are coming from. GitHub identifies applications with a <strong>client_id</strong> and <strong>client_secret</strong> it uniquely assigns to each application.  </p>
+<p>To have an application interface with the GitHub API it first needs to be registered with GitHub to identify where the authorization requests are originating. GitHub identifies applications using a unique <strong>client_id</strong> and <strong>client_secret</strong> for each application.  </p>
 
 <p>To register your application:</p>
 
@@ -105,26 +105,26 @@ script: oauth-tutorial.app
 <p><img src="http://i.imgur.com/aUkxWwt.png" alt=""></p>
 
 <ol>
-<li><p>For your <strong>Application name</strong>, enter what you would like your application to called, this does not need to be unique, this is the name the user will see when granting you the authorization. I named mine “GitHub OAuth Tutorial”</p></li>
+<li><p><strong>Application name</strong>: enter what you would like your application to called, this does not need to be unique, this is the name the user will see when granting the authorization. In this example it is named “GitHub OAuth Tutorial”.</p></li>
 <li>
-<p>For your <strong>Homepage URL</strong>, right now we are still running our web server locally so enter: <code>http://localhost:8080
+<p><strong>Homepage URL</strong>: currently the web server is running locally so enter: <code>http://localhost:8080
 </code>  </p>
 
 <p>This can be changed later if you choose to host your application.</p>
 </li>
-<li><p>The <strong>Application description</strong> is an optional field you can use to provide further details about your application. Since this field is optional, let's leave it blank.</p></li>
-<li><p>The <strong>Authorization callback URL</strong> is the last field, this is a URL that GitHub will make requests back to our application during the authorization process. We will need to create a handler in our <strong>oauth-tutorial.py</strong> file to handle these responses, which we will do later on. Let’s call this /callback, so for this field enter: <code>http://localhost:8080/callback</code></p></li>
+<li><p><strong>Application description</strong>: an optional field you can use to provide further details about your application.</p></li>
+<li><p><strong>Authorization callback URL</strong>: this is a URL that GitHub will make requests back to our application during the authorization request. We will need to create a handler in our <strong>oauth-tutorial.py</strong> file for these responses, which we will do in later steps. Let’s call this /callback, so for this field enter: <code>http://localhost:8080/callback</code></p></li>
 <li><p>Click the <strong>Register Application</strong> button and now your app is registered to talk to GitHub! You should see a Client ID and Client Secret.</p></li>
 </ol>
 
 <h2>
-<a id="getting-the-github-authorization" class="anchor" href="#getting-the-github-authorization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting the GitHub Authorization</h2>
+<a id="obtain-github-authorization" class="anchor" href="#obtain-github-authorization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Obtain GitHub Authorization</h2>
 
-<p>Now that the application is registered, we need to put our new <strong>client_id</strong> and <strong>client_secret</strong> into our application to use in requests to GitHub. But we do not want these values in code that could be pushed up to GitHub, else other applications can use them to access our user's data. So one way to hide these values is to put them in a json file that will not be committed to GitHub.</p>
+<p>Now that the application is registered, we need to put our new <strong>client_id</strong> and <strong>client_secret</strong> into the application to use in requests to GitHub. These values need to be kept secret so they should not be in code that could be pushed up to GitHub. If obtained else other applications can access our user's data. One way to hide these values is to put them in a json file that will not be committed to GitHub.</p>
 
 <ol>
 <li>
-<p>Create a new json file in your oauth-tutorial directory, called <strong>client_secrets.json</strong>. Inside of it, put in your <strong>client_id</strong> and <strong>client_secret</strong> you got from registering your application.</p>
+  <p>Create a new json file in your <strong>oauth-tutorial</strong> directory, called <strong>client_secrets.json</strong>. Put in your <strong>client_id</strong> and <strong>client_secret</strong>.</p>
 
 <pre><code>{
     "client_id":"&lt;your client_id&gt;",
@@ -135,7 +135,7 @@ script: oauth-tutorial.app
 <li><p>Now we need to have our <strong>oauth-tutorial.py</strong> access these fields. To parse the json, we need to add the json library to our application. Add this as an import next to webapps:<br>
 <code>import webapp2, json</code></p></li>
 <li>
-<p>Next we can add in the code to grab those two fields. Under your imports, add:</p>
+<p>Next add in the code to grab those two fields. Under your imports, add:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">with</span> <span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">'</span>client_secrets.json<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> data_file:    
 data <span class="pl-k">=</span> json.load(data_file)
@@ -144,13 +144,13 @@ client_id <span class="pl-k">=</span> data[<span class="pl-s"><span class="pl-pd
 client_secret <span class="pl-k">=</span> data[<span class="pl-s"><span class="pl-pds">"</span>client_secret<span class="pl-pds">"</span></span>]</pre></div>
 </li>
 <li>
-<p>The next step to getting authorization to a user’s data is to have the user give permission for our app to read their data.  </p>
+<p>Next the user needs to give permission for our app to read their data.  </p>
 
-<p>We can choose to ask the user for a specific type of access, such as for their profile info or gists. This is specified using scopes. See all the scopes the API supports <a href="https://developer.github.com/v3/oauth/#scopes">here</a>.  </p>
+<p>We can choose to ask the user for a specific type of access using scopes, such as for their profile info or gists. See all the scopes the API supports <a href="https://developer.github.com/v3/oauth/#scopes">here</a>.  </p>
 
-<p>For our example, let’s just get the user’s email addresses. So we will set our <strong>scope</strong> to <code>user:email</code>.  </p>
+<p>For this example, we ask for access to the user’s email addresses. So we will set our <strong>scope</strong> to <code>user:email</code>.  </p>
 
-<p>Let’s put a link on our main webpage to GitHub, where a user can choose to authorize our app to read their email addresses.  </p>
+<p>Put a link on the main webpage to GitHub where users can choose to authorize the app to read their email addresses:  </p>
 
 <p>Change your get method in the MainPage class to:</p>
 
@@ -159,7 +159,7 @@ client_secret <span class="pl-k">=</span> data[<span class="pl-s"><span class="p
     <span class="pl-v">self</span>.response.write(<span class="pl-c1">MAIN_PAGE_HTML</span>)</pre></div>
 </li>
 <li>
-<p>Next create the <strong>MAIN_PAGE_HTML</strong> variable under your json parsing code to hold the HTML.</p>
+<p>Next create the <code>MAIN_PAGE_HTML</code> variable under your json parsing code to hold the HTML.</p>
 
 <div class="highlight highlight-source-python"><pre>
 <span class="pl-c1">MAIN_PAGE_HTML</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"""</span><span class="pl-c1">\</span></span>
@@ -184,7 +184,7 @@ client_secret <span class="pl-k">=</span> data[<span class="pl-s"><span class="p
 
 <p><img src="http://i.imgur.com/W0NxPjO.png" alt="">  </p>
 
-<p>If the user clicks <strong>Authorize application</strong>, then Github will call our callback URL (that we stated when we registered the app). But we need setup a handler for <code>/callback</code>.</p>
+<p>If the user clicks <strong>Authorize application</strong> then Github will call our callback URL from the app registration. But there needs to be a handler for <code>/callback</code>.</p>
 </li>
 <li>
 <p>Add a request handler for <code>/callback</code> after the default handler at the bottom of the page that will call a class named <code>Callback</code></p>
@@ -197,7 +197,7 @@ client_secret <span class="pl-k">=</span> data[<span class="pl-s"><span class="p
 <li>
 <p>Now create the <code>Callback</code> class, after the <code>MainPage</code> class.  In it, we will need <code>def get(self):</code> method to handle the the GET request we will receive from GitHub which includes a <strong>code</strong> field and the <strong>scope</strong> for the type of access.  </p>
 
-<p>Let’s create the get method and get the <strong>scope</strong> and <strong>code</strong> field from the request:</p>
+<p>Add the get method and get the <strong>scope</strong> and <strong>code</strong> field from the request:</p>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">class</span> <span class="pl-en">Callback</span>(<span class="pl-e">webapp2</span>.<span class="pl-e">RequestHandler</span>):
 <span class="pl-k">def</span> <span class="pl-en">get</span>(<span class="pl-smi">self</span>):
@@ -206,7 +206,7 @@ client_secret <span class="pl-k">=</span> data[<span class="pl-s"><span class="p
     scope <span class="pl-k">=</span> <span class="pl-v">self</span>.request.get(<span class="pl-s"><span class="pl-pds">'</span>scope<span class="pl-pds">'</span></span>)</pre></div>
 </li>
 <li>
-<p>Now with this code, we have all the fields we need to construct a request for an <strong>access_token</strong> from GitHub! The <strong>access_token</strong> will then allow you to make requests to the API on behalf of the user. Now we need to put all of our fields together and construct our request to get the <strong>access_token</strong>. Let’s create a dictionary of the fields, put this after the previous line:</p>
+<p>Now we have all the fields we needed to construct a request for an <strong>access_token</strong> from GitHub! The <strong>access_token</strong> will then allow you to make requests to the API on behalf of the user. Now we need to put all of our fields together and construct our request to get the <strong>access_token</strong>. Create a dictionary of the fields, put this after the previous line:</p>
 
 <div class="highlight highlight-source-python"><pre>auth_params <span class="pl-k">=</span> <span class="pl-c1">dict</span>(<span class="pl-v">client_id</span><span class="pl-k">=</span>client_id, <span class="pl-v">client_secret</span><span class="pl-k">=</span>client_secret, <span class="pl-v">code</span><span class="pl-k">=</span>code, <span class="pl-v">scope</span><span class="pl-k">=</span>scope)</pre></div>
 </li>
@@ -261,10 +261,10 @@ args <span class="pl-k">=</span> []
 <p>Also remember to add a TIMEOUT variable in the file:<br>
 <code>TIMEOUT=60</code></p>
 
-<p>Everything should run successfully, but we need to do some error handling to make sure. If our request failed, then we  will get an <code>HTTPError</code>. Else this code will get the response from the request and the next line will see if there is an error in the response, if there is it will show the error. Else, we succeeded in getting our access token and a success message will print out. A successful response should look similar to this:<br>
+<p>Everything should run successfully, but there needs to be some error handling. If the request failed we will get an <code>HTTPError</code> If it succeeded a success message will print out, a successful response should look similar to this:<br>
 <code>access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&amp;scope=user%2Cgist&amp;token_type=bearer</code>  </p>
 
-<p>Note in this example, we are printing out the <strong>access_token</strong>, make sure in practice to hide this value from the user.</p>
+  <p><strong>Note:</strong> In this example we are printing out the <strong>access_token</strong>, make sure in practice to hide this value from the user.</p>
 </li>
 <li>
 <p>Before you run this to get your <strong>access_token</strong>, we need to put in the class for <code>GitHubApiAuthError</code> mentioned above. Enter this class after your <code>CallBack</code> class:</p>
@@ -276,7 +276,7 @@ args <span class="pl-k">=</span> []
 <li>
 <p>Now you should be able to run the code by refreshing your <a href="http://localhost:8080">http://localhost:8080</a> page.  </p>
 
-<p>With this <strong>access_token</strong>, you can now make authorized requests to GitHub! There are multiple <a href="https://developer.github.com/libraries/">libraries</a> in several languages available to make the requests.  </p>
+<p>With the <strong>access_token</strong> you can make authorized requests to GitHub! There are multiple <a href="https://developer.github.com/libraries/">libraries</a> in several languages available to make the requests.  </p>
 
 <p>I hope this helped you to better understand OAuth with GitHub. If you have any issues, you can compare to my code <a href="https://github.com/angelaLazar/oauth-tutorial">here</a>.</p>
 </li>
