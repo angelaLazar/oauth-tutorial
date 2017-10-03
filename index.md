@@ -1,17 +1,17 @@
-The GitHub API allows applications to interface with GitHub to access user data, create/delete users, view repos and more. To access data via the GitHub API, your app must be given authorization. This tutorial will walk you through the steps of creating a simple Google App Engine(GAE) app which will gain authorization to interface with the GitHub API. The goal here is to get an **access_token** from GitHub which can then be used to make authorized requests.
+The GitHub API allows applications to interface with GitHub to access user data, create/delete users, view repositories and more. To access data via the GitHub API, an app must be given authorization. This tutorial will go through the steps of creating a simple Google App Engine (GAE) app which will gain authorization to interface with the GitHub API. The goal here is to get an **access_token** from GitHub which can then be used to make authorized requests.
  
 This tutorial uses GAE for a quick Python application setup but other Python web application frameworks should be similar.  For this tutorial you must have a GitHub account where your new application can be registered. 
 
 ## Create a Python Application using Google App Engine
 
-1. First before getting started, you will need to [download the Python SDK for App Engine.](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
+1. Before getting started, you will need to [download the Python SDK for App Engine.](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
 
 1. In terminal create a new directory to hold the project called **oauth-tutorial**:      
 `mkdir oauth-tutorial`
 
 1. Here create a new Python file named **oauth-tutorial.py** to contain your handlers. Then add a simple handler to see that the application was setup correctly.
     
-     ```python
+```python
 import webapp2
 
 	class MainPage(webapp2.RequestHandler):
@@ -22,12 +22,13 @@ import webapp2
 	app = webapp2.WSGIApplication([
 	    ('/', MainPage),
 	], debug=True)
-    ```    
+```
+
 This script will respond with a “Success!” message.
 
 1. Before running the application create a configuration file called **app.yaml**. Make sure to create this inside the oauth-tutorial directory.
 
-    ```
+```
 version: 1
 runtime: python27
 api_version: 1
@@ -40,7 +41,8 @@ libraries:
 handlers:
 - url: /.*
   script: oauth-tutorial.app
-    ```
+```
+
 This YAML file states the application version number, the python runtime environment with its API version and that the application is thread-safe. 
 
 1. Now that there is a request handler and configuration file the application can be run on the web server provided by the App Engine Python SDK.  
