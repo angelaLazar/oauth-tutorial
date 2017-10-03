@@ -24,7 +24,7 @@ import webapp2
 	], debug=True)
 ```
 
-  This script will respond with a “Success!” message.
+This script will respond with a “Success!” message.
 
 4. Before running the application create a configuration file called **app.yaml**. Make sure to create this inside the oauth-tutorial directory.
 
@@ -47,13 +47,13 @@ handlers:
 
 5. Now that there is a request handler and configuration file the application can be run on the web server provided by the App Engine Python SDK.  
 
-  Inside the oauth-tutorial/ directory, run this command which gets your web server running:
+Inside the oauth-tutorial/ directory, run this command which gets your web server running:
+  
 `dev_appserver.py oauth-tutorial/`  
 
-  Then from your browser navigate to:
-[http://localhost:8080/](http://localhost:8080/)  
+From your browser navigate to [http://localhost:8080/](http://localhost:8080/).  
 
-  You should see the “Success!” message from the python file. This means everything is running correctly. 
+You should see the “Success!” message from the python file. This means everything is running correctly. 
 
 ## Register the application with GitHub
 
@@ -73,43 +73,44 @@ Open the form to [register a new application](https://github.com/settings/applic
 
 **Authorization callback URL**: the URL GitHub will use to make requests back to our application during the authorization request. We will need to create a handler in our **oauth-tutorial.py** file for this, completed in later steps. Let’s call this `/callback`, so for this field enter: `http://localhost:8080/callback`
 
-Click the **Register Application** button and now your app is registered to talk to GitHub! You should see a **Client ID** and **Client Secret**.
+Click the **Register application** button and now your app is registered to talk to GitHub! You should see a **Client ID** and **Client Secret**.
 
 ## Obtain GitHub Authorization
 
-Now that the application is registered, we need to put our new **client_id** and **client_secret** into the application to use in requests to GitHub. These values need to be kept secret, so do not publish them in a GitHub repository. One way to protect these values is to put them in a json file that will not be committed to GitHub.
+Now that the application is registered, we need to put the `client_id` and `client_secret` into the application to use in requests. These values need to be kept secret, one way to protect these values is to put them in a json file that will not be committed to GitHub.
 
-1. Create a new json file in your oauth-tutorial directory, called **client_secrets.json**. Include your **client_id** and **client_secret** received from registering your application.
+1. Create a new json file in the `oauth-tutorial` directory, called **client_secrets.json**. Include your `client_id` and `client_secret` received from registering your application.
 
-    ```
+```
 {
         "client_id":"<your client_id>",
         "client_secret":"<your client_secret"
 }
-    ```  
+```  
 
-2. Now we need to have our **oauth-tutorial.py** access these fields. To parse the json we need to add the json library to our application. Add this as an import next to webapps:  
+2. We need to have our **oauth-tutorial.py** access these fields. To parse the json we need to add the json library to our application. Add this as an import next to webapps:
+
 `import webapp2, json`
 
-3. Next add in the code to grab those two fields. Under your imports, add:
+3. Add in the code to grab those two fields. Under the imports, add:
 
-    ```python
+```python
 with open('client_secrets.json') as data_file:    
     data = json.load(data_file)
 
 client_id = data["client_id"]
 client_secret = data["client_secret"]
-    ```
+```
 
 4. Next the user must grant permission for the app to access their data.  
 
   We can choose to ask the user for a specific type of access, such as for their profile info or gists. This is specified using scopes. See all the scopes the GitHub API supports [here](https://developer.github.com/v3/oauth/#scopes).  
 
-  For this tutorial let’s just get the user’s email addresses. So we will set our **scope** to `user:email`.
+  For this tutorial let’s just get the user’s email addresses. So we will set our `scope` to `user:email`.
   
 5. There needs to be a link for the user to grant or deny permissions. Let’s put a link on our main webpage to GitHub:
 
-  Change your get method in the MainPage class to:
+  Change your get method in the `MainPage` class to:
 
     ```python
 class MainPage(webapp2.RequestHandler):
@@ -117,9 +118,9 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(MAIN_PAGE_HTML)
     ```
 
-6. Create the **MAIN_PAGE_HTML** variable under your json parsing code to hold the HTML.
+6. Create the `MAIN_PAGE_HTML` variable under your json parsing code to hold the HTML.
 
-    ```python
+```python
 
 MAIN_PAGE_HTML = """\
 <html>
@@ -138,7 +139,7 @@ MAIN_PAGE_HTML = """\
   </body>
 </html>
 """ %(client_id)
-    ```
+```
 
   This will create a link that brings the user to GitHub to authorize the app to access their GitHub email. 
  
