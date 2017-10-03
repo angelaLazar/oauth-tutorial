@@ -23,8 +23,8 @@ This tutorial uses GAE for a quick Python application setup but other Python web
 	        ('/', MainPage),
 	    ], debug=True)
     ```
-
-  This script will respond with a “Success!” message.
+    
+    This script will respond with a “Success!” message.
 
 4. Before running the application create a configuration file called **app.yaml**. Make sure to create this inside the oauth-tutorial directory.
 
@@ -42,8 +42,7 @@ This tutorial uses GAE for a quick Python application setup but other Python web
     - url: /.*
       script: oauth-tutorial.app
     ```
-
-  This YAML file states the application version number, the python runtime environment with its API version and that the application is thread-safe. 
+    This YAML file states the application version number, the python runtime environment with its API version and that the application is thread-safe. 
 
 5. Now that there is a request handler and configuration file the application can be run on the web server provided by the App Engine Python SDK.  
 
@@ -256,42 +255,3 @@ class GitHubApiAuthError(Exception):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
