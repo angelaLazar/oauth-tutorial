@@ -26,7 +26,7 @@ This tutorial uses GAE for a quick Python application setup but other Python web
     
     This script will respond with a “Success!” message.
 
-4. Before running the application create a configuration file called **app.yaml**. Make sure to create this inside the oauth-tutorial directory.
+4. Before running the application, create a configuration file called **app.yaml**. Make sure to create this inside the **oauth-tutorial** directory.
 
     ```
     version: 1
@@ -42,11 +42,11 @@ This tutorial uses GAE for a quick Python application setup but other Python web
     - url: /.*
       script: oauth-tutorial.app
     ```
-    This YAML file states the application version number, the python runtime environment with its API version and that the application is thread-safe. 
+    This YAML file states: the application version number, the python runtime environment with its API version, and that the application is thread-safe. 
 
 5. Now that there is a request handler and configuration file the application can be run on the web server provided by the App Engine Python SDK.  
 
-  Inside the oauth-tutorial/ directory, run this command which gets your web server running:
+  Inside the **oauth-tutorial** directory, run this command which gets your web server running:
   
   `dev_appserver.py oauth-tutorial/`  
 
@@ -56,7 +56,7 @@ This tutorial uses GAE for a quick Python application setup but other Python web
 
 ## Register the application with GitHub
 
-To have an application interface with the GitHub API it needs to be registered with GitHub to identify where the authorization requests are originating. GitHub identifies applications using a unique `client_id` and `client_secret` for each application.
+For an application to interface with the GitHub API it needs to be registered with GitHub to identify where the authorization requests are originating. GitHub identifies applications using a unique `client_id` and `client_secret`.
 
 Open the form to [register a new application](https://github.com/settings/applications/new).  
  
@@ -231,7 +231,7 @@ Now that the application is registered, we need to put the `client_id` and `clie
     If we succeeded in getting our access token a success message will print out. A successful response should look similar to this:  
     `access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&scope=user%2Cgist&token_type=bearer`  
     
-    Note in this example we are printing out the **access_token**, make sure in practice to hide this value from the user!
+    **Note:** in this example we are printing out the **access_token**, make sure in practice to hide this value from the user!
 
 7. Next is the error handling for unsuccessful requests. Before you run this to get your **access_token** we need to put in the class for `GitHubApiAuthError` . Enter this class after your `CallBack` class:
 
