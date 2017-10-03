@@ -7,53 +7,53 @@ This tutorial uses GAE for a quick Python application setup but other Python web
 1. Before getting started, you will need to [download the Python SDK for App Engine.](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
 
 2. In terminal create a new directory to hold the project called **oauth-tutorial**:      
-`mkdir oauth-tutorial`
+  `mkdir oauth-tutorial`
 
 3. Here create a new Python file named **oauth-tutorial.py** to contain your handlers. Then add a simple handler to see that the application was setup correctly.
     
-```python
-import webapp2
+    ```python
+    import webapp2
 
-	class MainPage(webapp2.RequestHandler):
-	    def get(self):
-	    	self.reponse.headers['Content-Type'] = 'text/plain'
-	    	self.response.write('Success!')
+	    class MainPage(webapp2.RequestHandler):
+	        def get(self):
+	    	    self.reponse.headers['Content-Type'] = 'text/plain'
+	    	    self.response.write('Success!')
 
-	app = webapp2.WSGIApplication([
-	    ('/', MainPage),
-	], debug=True)
-```
+	    app = webapp2.WSGIApplication([
+	        ('/', MainPage),
+	    ], debug=True)
+    ```
 
-This script will respond with a “Success!” message.
+  This script will respond with a “Success!” message.
 
 4. Before running the application create a configuration file called **app.yaml**. Make sure to create this inside the oauth-tutorial directory.
 
-```
-version: 1
-runtime: python27
-api_version: 1
-threadsafe: true
+    ```
+    version: 1
+    runtime: python27
+    api_version: 1
+    threadsafe: true
 
-libraries:
-- name: webapp2
-  version: latest
+    libraries:
+    - name: webapp2
+      version: latest
 
-handlers:
-- url: /.*
-  script: oauth-tutorial.app
-```
+    handlers:
+    - url: /.*
+      script: oauth-tutorial.app
+    ```
 
   This YAML file states the application version number, the python runtime environment with its API version and that the application is thread-safe. 
 
 5. Now that there is a request handler and configuration file the application can be run on the web server provided by the App Engine Python SDK.  
 
-Inside the oauth-tutorial/ directory, run this command which gets your web server running:
+  Inside the oauth-tutorial/ directory, run this command which gets your web server running:
   
-`dev_appserver.py oauth-tutorial/`  
+  `dev_appserver.py oauth-tutorial/`  
 
-From your browser navigate to [http://localhost:8080/](http://localhost:8080/).  
+  From your browser navigate to [http://localhost:8080/](http://localhost:8080/).  
 
-You should see the “Success!” message from the python file. This means everything is running correctly. 
+  You should see the “Success!” message from the python file. This means everything is running correctly. 
 
 ## Register the application with GitHub
 
@@ -79,28 +79,28 @@ Click the **Register application** button and now your app is registered to talk
 
 Now that the application is registered, we need to put the `client_id` and `client_secret` into the application to use in requests. These values need to be kept secret, one way to protect these values is to put them in a json file that will not be committed to GitHub.
 
-1. Create a new json file in the `oauth-tutorial` directory, called **client_secrets.json**. Include your `client_id` and `client_secret` received from registering your application.
+1. Create a new json file in the `oauth-tutorial` directory, called **client_secrets.json**. Include the `client_id` and `client_secret` received from registering your application.
 
-```
-{
-        "client_id":"<your client_id>",
-        "client_secret":"<your client_secret"
-}
-```  
+    ```
+    {
+            "client_id":"<your client_id>",
+            "client_secret":"<your client_secret"
+    }
+    ```  
 
 2. We need to have our **oauth-tutorial.py** access these fields. To parse the json we need to add the json library to our application. Add this as an import next to webapps:
 
-`import webapp2, json`
+    `import webapp2, json`
 
-3. Add in the code to grab those two fields. Under the imports, add:
+3. Add in the code to get these two fields. Under the imports, add:
 
-```python
-with open('client_secrets.json') as data_file:    
-    data = json.load(data_file)
+    ```python
+    with open('client_secrets.json') as data_file:    
+        data = json.load(data_file)
 
-client_id = data["client_id"]
-client_secret = data["client_secret"]
-```
+    client_id = data["client_id"]
+    client_secret = data["client_secret"]
+    ```
 
 4. Next the user must grant permission for the app to access their data.  
 
@@ -112,34 +112,34 @@ client_secret = data["client_secret"]
 
   Change your get method in the `MainPage` class to:
 
-```python
-class MainPage(webapp2.RequestHandler):
-    def get(self):
-        self.response.write(MAIN_PAGE_HTML)
-```
+    ```python
+    class MainPage(webapp2.RequestHandler):
+        def get(self):
+            self.response.write(MAIN_PAGE_HTML)
+    ```
 
 6. Create the `MAIN_PAGE_HTML` variable under your json parsing code to hold the HTML.
 
-```python
+    ```python
 
-MAIN_PAGE_HTML = """\
-<html>
-  <head>
-  </head>
-  <body>
-    <p>
-      You can include a link or access point in your site that brings the user to GitHub to authorize
-      your app to access their protected GitHub profile data. <br></br>
-
-      Here is an example:<br>
-
-      To authorize this site to access your GitHub email addresses 
-      <a href="https://github.com/login/oauth/authorize?scope=user:email&client_id=%s">Click here</a></a>
-    </p>
-  </body>
-</html>
-""" %(client_id)
-```
+    MAIN_PAGE_HTML = """\
+    <html>
+      <head>
+      </head>
+      <body>
+      <p>
+          You can include a link or access point in your site that brings the user to GitHub to authorize
+          your app to access their protected GitHub profile data. <br></br>
+	  
+          Here is an example:<br>
+          
+	  To authorize this site to access your GitHub email addresses 
+          <a href="https://github.com/login/oauth/authorize?scope=user:email&client_id=%s">Click here</a></a>
+       </p>
+      </body>
+    </html>
+    """ %(client_id)
+    ```
 
   This will create a link that brings the user to GitHub to authorize the app to access their GitHub email. 
  
@@ -158,7 +158,7 @@ app = webapp2.WSGIApplication([
 ], debug=True)
 ```
 
-2. Now create the `Callback` class, after the `MainPage` class.  In this we will need `def get(self):` method to handle the the GET request we will receive from GitHub which includes a `code` field and `scope` for the type of access.  
+2. Now create the `Callback` class, after the `MainPage` class.  In this we will need a `def get(self):` method to handle the the GET request we will receive from GitHub which includes a `code` field and `scope` for the type of access.  
 
    ```python
 class Callback(webapp2.RequestHandler):
