@@ -112,11 +112,11 @@ client_secret = data["client_secret"]
 
   Change your get method in the `MainPage` class to:
 
-    ```python
+```python
 class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.write(MAIN_PAGE_HTML)
-    ```
+```
 
 6. Create the `MAIN_PAGE_HTML` variable under your json parsing code to hold the HTML.
 
