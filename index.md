@@ -1,15 +1,15 @@
 The GitHub API allows applications to interface with GitHub to access user data, create/delete users, view repos and more. To access data via the GitHub API, your app must be given authorization. This tutorial will walk you through the steps of creating a simple Google App Engine(GAE) app which will gain authorization to interface with the GitHub API. The goal here is to get an **access_token** from GitHub which can then be used to make authorized requests.
  
-Though this tutorial, uses GAE for a quick Python application setup, other Python web application frameworks should be similar.  For this tutorial you must also have a GitHub account where your new application can be registered.
+This tutorial uses GAE for a quick Python application setup but other Python web application frameworks should be similar.  For this tutorial you must have a GitHub account where your new application can be registered. 
 
 ## Create a Python Application using Google App Engine
 
-1. Before you can get started, you will need to [download the Python SDK for App Engine.](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
+1. First before getting started, you will need to [download the Python SDK for App Engine.](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
 
-1. In your terminal, create a new directory to hold the project called oauth-tutorial.    
+1. In terminal create a new directory to hold the project called **oauth-tutorial**:      
 `mkdir oauth-tutorial`
 
-1. Inside your new directory, create a new Python file to contain your handlers. Let’s first start with a simple handler to see that the application was setup correctly. Call the file **oauth-tutorial.py** 
+1. Here create a new Python file named **oauth-tutorial.py** to contain your handlers. Then add a simple handler to see that the application was setup correctly.
     
      ```python
 import webapp2
@@ -25,7 +25,7 @@ import webapp2
     ```    
 This script will respond with a “Success!” message.
 
-1. Next before we can run the application we need to create a configuration file called **app.yaml**. Make sure to create this inside the oauth-tutorial directory.
+1. Before running the application create a configuration file called **app.yaml**. Make sure to create this inside the oauth-tutorial directory.
 
     ```
 version: 1
@@ -41,46 +41,45 @@ handlers:
 - url: /.*
   script: oauth-tutorial.app
     ```
-The syntax of this file is YAML. This file states the application version number, the python runtime environment with its API version and that the application is thread-safe so it can safely handle multiple requests at once. 
+This YAML file states the application version number, the python runtime environment with its API version and that the application is thread-safe. 
 
-1. Now that there is a request handler and configuration file, the application can now be run on the web server provided by the App Engine Python SDK.  
+1. Now that there is a request handler and configuration file the application can be run on the web server provided by the App Engine Python SDK.  
 
-  From your directory that contains your oauth-tutorial/ directory, run this command which gets your web server running:
+  Inside the oauth-tutorial/ directory, run this command which gets your web server running:
 `dev_appserver.py oauth-tutorial/`  
 
-  Then, from your browser, navigate to:
+  Then from your browser navigate to:
 [http://localhost:8080/](http://localhost:8080/)  
 
   You should see the “Success!” message from the python file. This means everything is running correctly. 
 
 ## Register the application with GitHub
 
-To have an application interface with the GitHub API, it first needs to be registered with GitHub to identify where the requests for authorization are coming from. GitHub identifies applications with a **client_id** and **client_secret** it uniquely assigns to each application.  
+To have an application interface with the GitHub API it needs to be registered with GitHub to identify where the authorization requests are originating. GitHub identifies applications using a unique `client_id` and `client_secret` for each application.
 
-To register your application:
+1. To register your application:
 
-1. Open the form to register a new application [here](https://github.com/settings/applications/new).  
+Open the form to [register a new application](https://github.com/settings/applications/new).  
  
 ![](http://i.imgur.com/aUkxWwt.png)
 
-1. For your **Application name**, enter what you would like your application to called, this does not need to be unique, this is the name the user will see when granting you the authorization. I named mine “GitHub OAuth Tutorial”
+**Application name**: this is what you would like your application to called, this field does not need to be unique. This is the name users see when granting authorization. It is named “GitHub OAuth Tutorial” in this tutorial.
 
-1. For your **Homepage URL**, right now we are still running our web server locally so enter: `http://localhost:8080
-`  
+**Homepage URL**: the web server is running locally so enter: `http://localhost:8080` (or the port number you are using)  
 
   This can be changed later if you choose to host your application.
 
-1. The **Application description** is an optional field you can use to provide further details about your application. Since this field is optional, let's leave it blank.
+**Application description**: an optional field you can use to provide further details about your application. It will currently will be left blank in this tutorial.
 
-1. The **Authorization callback URL** is the last field, this is a URL that GitHub will make requests back to our application during the authorization process. We will need to create a handler in our **oauth-tutorial.py** file to handle these responses, which we will do later on. Let’s call this /callback, so for this field enter: `http://localhost:8080/callback`
+**Authorization callback URL**: the URL GitHub will use to make requests back to our application during the authorization request. We will need to create a handler in our **oauth-tutorial.py** file for this, completed in later steps. Let’s call this `/callback`, so for this field enter: `http://localhost:8080/callback`
 
-1. Click the **Register Application** button and now your app is registered to talk to GitHub! You should see a Client ID and Client Secret.
+Click the **Register Application** button and now your app is registered to talk to GitHub! You should see a **Client ID** and **Client Secret**.
 
-## Getting the GitHub Authorization
+## Obtain GitHub Authorization
 
-Now that the application is registered, we need to put our new **client_id** and **client_secret** into our application to use in requests to GitHub. But we do not want these values in code that could be pushed up to GitHub, else other applications can use them to access our user's data. So one way to hide these values is to put them in a json file that will not be committed to GitHub.
+Now that the application is registered, we need to put our new **client_id** and **client_secret** into the application to use in requests to GitHub. These values need to be kept secret, so do not publish them in a GitHub repository. One way to protect these values is to put them in a json file that will not be committed to GitHub.
 
-1. Create a new json file in your oauth-tutorial directory, called **client_secrets.json**. Inside of it, put in your **client_id** and **client_secret** you got from registering your application.
+1. Create a new json file in your oauth-tutorial directory, called **client_secrets.json**. Include your **client_id** and **client_secret** received from registering your application.
 
     ```
 {
@@ -89,10 +88,10 @@ Now that the application is registered, we need to put our new **client_id** and
 }
     ```  
 
-1. Now we need to have our **oauth-tutorial.py** access these fields. To parse the json, we need to add the json library to our application. Add this as an import next to webapps:  
+1. Now we need to have our **oauth-tutorial.py** access these fields. To parse the json we need to add the json library to our application. Add this as an import next to webapps:  
 `import webapp2, json`
 
-1. Next we can add in the code to grab those two fields. Under your imports, add:
+1. Next add in the code to grab those two fields. Under your imports, add:
 
     ```python
 with open('client_secrets.json') as data_file:    
@@ -102,13 +101,13 @@ client_id = data["client_id"]
 client_secret = data["client_secret"]
     ```
 
-1. The next step to getting authorization to a user’s data is to have the user give permission for our app to read their data.  
+1. Next the user must grant permission for the app to access their data.  
 
-  We can choose to ask the user for a specific type of access, such as for their profile info or gists. This is specified using scopes. See all the scopes the API supports [here](https://developer.github.com/v3/oauth/#scopes).  
+  We can choose to ask the user for a specific type of access, such as for their profile info or gists. This is specified using scopes. See all the scopes the GitHub API supports [here](https://developer.github.com/v3/oauth/#scopes).  
 
-  For our example, let’s just get the user’s email addresses. So we will set our **scope** to `user:email`.  
-
-  Let’s put a link on our main webpage to GitHub, where a user can choose to authorize our app to read their email addresses.  
+  For this tutorial let’s just get the user’s email addresses. So we will set our **scope** to `user:email`.
+  
+1. There needs to be a link for the user to grant or deny permissions. Let’s put a link on our main webpage to GitHub:
 
   Change your get method in the MainPage class to:
 
@@ -118,7 +117,7 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(MAIN_PAGE_HTML)
     ```
 
-1. Next create the **MAIN_PAGE_HTML** variable under your json parsing code to hold the HTML.
+1. Create the **MAIN_PAGE_HTML** variable under your json parsing code to hold the HTML.
 
     ```python
 
@@ -145,7 +144,7 @@ MAIN_PAGE_HTML = """\
  
   ![](http://i.imgur.com/W0NxPjO.png)  
 
-  If the user clicks **Authorize application**, then Github will call our callback URL (that we stated when we registered the app). But we need setup a handler for `/callback`.
+  If the user clicks **Authorize application** Github will make a request to the callback URL. But we need setup a handler for `/callback`.
 
 1. Add a request handler for `/callback` after the default handler at the bottom of the page that will call a class named `Callback`
 
@@ -156,9 +155,7 @@ app = webapp2.WSGIApplication([
 ], debug=True)
     ```
 
-1. Now create the `Callback` class, after the `MainPage` class.  In it, we will need `def get(self):` method to handle the the GET request we will receive from GitHub which includes a **code** field and the **scope** for the type of access.  
-
-  Let’s create the get method and get the **scope** and **code** field from the request:
+1. Now create the `Callback` class, after the `MainPage` class.  In this we will need `def get(self):` method to handle the the GET request we will receive from GitHub which includes a `code` field and `scope` for the type of access.  
 
    ```python
 class Callback(webapp2.RequestHandler):
@@ -168,12 +165,12 @@ class Callback(webapp2.RequestHandler):
 		scope = self.request.get('scope')
     ```
 
-1. Now with this code, we have all the fields we need to construct a request for an **access_token** from GitHub! The **access_token** will then allow you to make requests to the API on behalf of the user. Now we need to put all of our fields together and construct our request to get the **access_token**. Let’s create a dictionary of the fields, put this after the previous line:
+1. Now with this code we have all the fields we need to construct a request for a GitHub **access_token**! We need to put all of the fields together and construct the request to get the **access_token**. Create a dictionary after the previous line:
 
     ```python
 auth_params = dict(client_id=client_id, client_secret=client_secret, code=code, scope=scope)
     ```
-1. Next we need to construct our request to the API. Add these lines right after the previous:
+1. Next construct a request to the API. Add these lines right after the previous:
 
     ```python
 opener = build_opener(HTTPSHandler)
@@ -225,15 +222,15 @@ from urllib import quote as urlquote
 		except HTTPError as e:
 		    raise GitHubApiAuthError('HTTPError when getting access token from GitHub')
     ```  
-  Also remember to add a TIMEOUT variable in the file:  
+  Also remember to add a `TIMEOUT` variable in the file:  
   `TIMEOUT=60`
 
-  Everything should run successfully, but we need to do some error handling to make sure. If our request failed, then we  will get an `HTTPError`. Else this code will get the response from the request and the next line will see if there is an error in the response, if there is it will show the error. Else, we succeeded in getting our access token and a success message will print out. A successful response should look similar to this:  
+If we succeeded in getting our access token a success message will print out. A successful response should look similar to this:  
   `access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&scope=user%2Cgist&token_type=bearer`  
   
-  Note in this example, we are printing out the **access_token**, make sure in practice to hide this value from the user.
+  Note in this example we are printing out the **access_token**, make sure in practice to hide this value from the user!
 
-1. Before you run this to get your **access_token**, we need to put in the class for `GitHubApiAuthError` mentioned above. Enter this class after your `CallBack` class:
+1. Next is the error handling for unsuccessful requests. Before you run this to get your **access_token** we need to put in the class for `GitHubApiAuthError` . Enter this class after your `CallBack` class:
 
     ```python
 class GitHubApiAuthError(Exception):
@@ -243,7 +240,7 @@ class GitHubApiAuthError(Exception):
 
 1. Now you should be able to run the code by refreshing your [http://localhost:8080](http://localhost:8080) page.  
 
-  With this **access_token**, you can now make authorized requests to GitHub! There are multiple [libraries](https://developer.github.com/libraries/) in several languages available to make the requests.  
+  With the **access_token** you can now make authorized requests to GitHub! There are multiple [libraries](https://developer.github.com/libraries/) in several languages available to make the requests.  
 
   I hope this helped you to better understand OAuth with GitHub. If you have any issues, you can compare to my code [here](https://github.com/angelaLazar/oauth-tutorial).
 
