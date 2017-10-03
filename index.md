@@ -103,13 +103,13 @@ Now that the application is registered, we need to put the `client_id` and `clie
 
 4. Next the user must grant permission for the app to access their data.  
 
-  We can choose to ask the user for a specific type of access, such as for their profile info or gists. This is specified using scopes. See all the scopes the GitHub API supports [here](https://developer.github.com/v3/oauth/#scopes).  
+    We can choose to ask the user for a specific type of access, such as for their profile info or gists. This is specified using scopes. See all the scopes the GitHub API supports [here](https://developer.github.com/v3/oauth/#scopes).  
 
-  For this tutorial let’s just get the user’s email addresses. So we will set our `scope` to `user:email`.
+    For this tutorial let’s just get the user’s email addresses. So we will set our `scope` to `user:email`.
   
 5. There needs to be a link for the user to grant or deny permissions. Let’s put a link on our main webpage to GitHub:
 
-  Change your get method in the `MainPage` class to:
+    Change your get method in the `MainPage` class to:
 
     ```python
     class MainPage(webapp2.RequestHandler):
@@ -140,74 +140,74 @@ Now that the application is registered, we need to put the `client_id` and `clie
     """ %(client_id)
     ```
 
-  This will create a link that brings the user to GitHub to authorize the app to access their GitHub email. 
+    This will create a link that brings the user to GitHub to authorize the app to access their GitHub email. 
  
-  ![](http://i.imgur.com/W0NxPjO.png)  
+    ![](http://i.imgur.com/W0NxPjO.png)  
 
-  If the user clicks **Authorize application** Github will make a request to the callback URL. But we need setup a handler for `/callback`.
+    If the user clicks **Authorize application** Github will make a request to the callback URL. But we need setup a handler for `/callback`.
   
 ## Handle the Response 
 
 1. Add a request handler for `/callback` after the default handler at the bottom of the page that will call a class named `Callback`
 
-```python
-app = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/callback', Callback),
-], debug=True)
-```
+    ```python
+    app = webapp2.WSGIApplication([
+        ('/', MainPage),
+        ('/callback', Callback),
+    ], debug=True)
+    ```
 
 2. Now create the `Callback` class, after the `MainPage` class.  In this we will need a `def get(self):` method to handle the the GET request we will receive from GitHub which includes a `code` field and `scope` for the type of access.  
 
-   ```python
-class Callback(webapp2.RequestHandler):
-	def get(self):
-		# From the GET response from GitHub you grab the code and scope
-		code = self.request.get('code')
-		scope = self.request.get('scope')
+    ```python
+    class Callback(webapp2.RequestHandler):
+        def get(self):
+	    # From the GET response from GitHub you grab the code and scope
+	    code = self.request.get('code')
+	    scope = self.request.get('scope')
     ```
 
 3. Now with this code we have all the fields we need to construct a request for a GitHub **access_token**! We need to put all of the fields together and construct the request to get the **access_token**. Create a dictionary after the previous line:
 
-```python
-auth_params = dict(client_id=client_id, client_secret=client_secret, code=code, scope=scope)
-```
+    ```python
+    auth_params = dict(client_id=client_id, client_secret=client_secret, code=code, scope=scope)
+    ```
 
 4. Next construct a request to the API. Add these lines right after the previous:
 
     ```python
-opener = build_opener(HTTPSHandler)
-request = Request('https://github.com/login/oauth/access_token',data=_encode_params(auth_params))
+    opener = build_opener(HTTPSHandler)
+    request = Request('https://github.com/login/oauth/access_token',data=_encode_params(auth_params))
     ```  
 
-  This is where we build our request. Note the `_encode_params` method here, we need to take our dictionary and encode it for the request. Copy this method above your two existing classes:
+    This is where we build our request. Note the `_encode_params` method here, we need to take our dictionary and encode it for the request. Copy this method above your two existing classes:
 
     ```python
-def _encode_params(kw):
-    '''
-    Encode parameters using utf-8 and join them together
-    '''
-    args = []
-    for k, v in kw.items():
-        try:
-            qv = v.encode('utf-8') if isinstance(v, unicode) else str(v)
-        except:
-            qv = v
-        args.append('%s=%s' % (k, urlquote(qv)))
-    return '&'.join(args)
+    def _encode_params(kw):
+        '''
+        Encode parameters using utf-8 and join them together
+        '''
+        args = []
+        for k, v in kw.items():
+            try:
+                qv = v.encode('utf-8') if isinstance(v, unicode) else str(v)
+            except:
+                qv = v
+            args.append('%s=%s' % (k, urlquote(qv)))
+        return '&'.join(args)
     ```
 
 5. This will require importing some libraries. Let’s add all the libraries we will need:
 
     ```python
-import webapp2
-import re, os, time, base64, hashlib, urllib, urlparse, json
+    import webapp2
+    import re, os, time, base64, hashlib, urllib, urlparse, json
 
-from urllib2 import build_opener, HTTPSHandler, Request, HTTPError
-from urllib import quote as urlquote
+    from urllib2 import build_opener, HTTPSHandler, Request, HTTPError
+    from urllib import quote as urlquote
     ```  
 
-  Some of these we aren’t using yet but we will in the next steps.
+    Some of these we aren’t using yet but we will in the next steps.
 
 6. Now we can make a request for the access token. Add this code to make a request right after where we build the request:
 
@@ -225,27 +225,27 @@ from urllib import quote as urlquote
 		except HTTPError as e:
 		    raise GitHubApiAuthError('HTTPError when getting access token from GitHub')
     ```  
-  Also remember to add a `TIMEOUT` variable in the file:  
-  `TIMEOUT=60`
+    
+    Also remember to add a `TIMEOUT` variable in the file:  `TIMEOUT=60`
 
-If we succeeded in getting our access token a success message will print out. A successful response should look similar to this:  
-  `access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&scope=user%2Cgist&token_type=bearer`  
-  
-  Note in this example we are printing out the **access_token**, make sure in practice to hide this value from the user!
+    If we succeeded in getting our access token a success message will print out. A successful response should look similar to this:  
+    `access_token=e72e16c7e42f292c6912e7710c838347ae178b4a&scope=user%2Cgist&token_type=bearer`  
+    
+    Note in this example we are printing out the **access_token**, make sure in practice to hide this value from the user!
 
 7. Next is the error handling for unsuccessful requests. Before you run this to get your **access_token** we need to put in the class for `GitHubApiAuthError` . Enter this class after your `CallBack` class:
 
     ```python
-class GitHubApiAuthError(Exception):
-    def __init__(self, msg):
-        super(Exception, self).__init__(msg)
+    class GitHubApiAuthError(Exception):
+        def __init__(self, msg):
+            super(Exception, self).__init__(msg)
     ```
 
 8. Now you should be able to run the code by refreshing your [http://localhost:8080](http://localhost:8080) page.  
 
-  With the **access_token** you can now make authorized requests to GitHub! There are multiple [libraries](https://developer.github.com/libraries/) in several languages available to make the requests.  
+    With the **access_token** you can now make authorized requests to GitHub! There are multiple [libraries](https://developer.github.com/libraries/) in several languages available to make the requests.  
 
-  I hope this helped you to better understand OAuth with GitHub. If you have any issues, you can compare to my code [here](https://github.com/angelaLazar/oauth-tutorial).
+    I hope this helped you to better understand OAuth with GitHub. If you have any issues, you can compare to my code [here](https://github.com/angelaLazar/oauth-tutorial).
 
 ### Reference Links:  
 
